@@ -1,7 +1,7 @@
 import smtplib,imaplib,email
 from email.mime import multipart,text,application
 
-__author__="S.R, YT:Imagine Existance"
+__author__="S.R, YT: Imagine Existance"
 
 def format_message(To="",From="",Subject="",Body="",Date="",Attachments=()):
 	"""creates a message to send with parameters all set no none"""
@@ -61,7 +61,7 @@ class email_client:
 		"""extracts a message from container with a predetermined extract set"""
 		if container!=False:self._reciver.select(container)
 		data={}
-		b_int=self._byte_form(message_id)
+		b_int=self._byte_form(message_id-1)
 		raw_data=self._reciver.fetch(b_int,"(RFC822)")[1]
 		data_dictionary=email.message_from_bytes(raw_data[0][1])
 		for get in extract:
@@ -80,16 +80,17 @@ class email_client:
 		"""adds a flag to emails such as deleted or seen or unseen"""
 		""""\\Deleted" is useful"""
 		if container!=False:self._reciver.select(container)
-		id=self._byte_form(id)
+		id=self._byte_form(id+1)
 		self._reciver.store(id,data_modify,data)
 		return None
 	
 	def list_count(self,container,list_out=False):
 		"""counts how many tags are in a container"""
+		#there is a slight issue with this one, use search count with all
 		if container!=False:self._reciver.select(container)
 		if list_out:
-			return list(range(1,1+int((self._reciver)[1][0].decode("utf-8"))))
-		return int((self._recivers)[1][0].decode("utf-8"))
+			return list(range(0,int((self._reciver(None))[1][0].decode("utf-8"))))
+		return int(self._reciver(None)[1][0].decode("utf-8"))
 		
 	def expunge(self,container):
 		"""gets rid of deleted"""
